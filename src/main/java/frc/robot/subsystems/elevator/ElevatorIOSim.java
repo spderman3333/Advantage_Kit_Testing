@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -12,6 +13,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOSim implements ElevatorIO {
 
@@ -23,11 +25,13 @@ public class ElevatorIOSim implements ElevatorIO {
             ElevatorConstants.ELEVATOR_MIN_HEIGHT.in(Meter),
             ElevatorConstants.ELEVATOR_MAX_HEIGHT.in(Meter),
             true,
-            0);
+            0.01);
 
     TalonFX motor;
     TalonFXSimState simMotor;
     TalonFXConfiguration motorConfig;
+
+    PositionVoltage positionControl = new PositionVoltage(0);
 
     public ElevatorIOSim() {
         motor = new TalonFX(Constants.ELEVATOR_ID);
@@ -61,6 +65,10 @@ public class ElevatorIOSim implements ElevatorIO {
 
         // Apply the voltage to the sim elevator that we apply to the sim motor.
         elevatorSim.setInputVoltage(simMotor.getMotorVoltage());
+
+        // Logs to "Real Outputs" NT
+        Logger.recordOutput("Simulated Elevator/simMotor/Voltage", simMotor.getMotorVoltage());
+
         elevatorSim.update(0.02); // Same update cycle as an actual robot, 20 ms.
 
         simMotor.setRawRotorPosition(getMotorRotations(elevatorSim.getPositionMeters()));
@@ -75,7 +83,7 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public void setMotorSetpoint(Angle position) {
-        motor.setPosition(position);
+        motor.setControl(positionControl.withPosition(position));
     }
 
     @Override
