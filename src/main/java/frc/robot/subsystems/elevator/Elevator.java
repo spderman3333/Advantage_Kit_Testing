@@ -45,8 +45,8 @@ public class Elevator extends SubsystemBase {
 
     enum ElevatorHeight {
         // Positions taken from offseason bot code, inturn taken from onshape.
-        UP(Inches.of(0.0)),
-        DOWN(Inches.of(56.0));
+        UP(Inches.of(56.0)),
+        DOWN(Inches.of(0.0));
 
         public final Distance position;
 
