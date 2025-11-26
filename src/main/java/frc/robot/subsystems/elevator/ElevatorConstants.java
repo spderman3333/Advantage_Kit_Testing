@@ -18,7 +18,7 @@ public class ElevatorConstants {
     public static final double ELEVATOR_HEIGHT_CHANGE_PER_MOTOR_ROTATION = 0.32560277;
 
     // Guess what, I asked design again.
-    public static final Distance ELEVATOR_SPOOL_RADIUS = Inches.of(0.898 / 2);
+    public static final Distance ELEVATOR_SPOOL_RADIUS = Inches.of(0.449);
 
     public static final Distance ELEVATOR_MIN_HEIGHT = Inches.of(0.0);
     public static final Distance ELEVATOR_MAX_HEIGHT = Inches.of(56.0);
