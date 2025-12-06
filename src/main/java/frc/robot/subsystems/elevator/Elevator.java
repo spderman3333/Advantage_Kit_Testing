@@ -33,7 +33,10 @@ public class Elevator extends SubsystemBase {
         io.updateState(replayedInputs);
         // Must be called every periodic after updating hardware state.
         Logger.processInputs("Elevator", replayedInputs);
+    }
 
+    @Override
+    public void simulationPeriodic() {
         SimulationVisualizer.getInstance().updateElevatorHeight(io.getCarriagePosition());
     }
 

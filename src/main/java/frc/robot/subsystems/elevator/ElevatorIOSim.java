@@ -32,9 +32,9 @@ public class ElevatorIOSim implements ElevatorIO {
             true,
             0.00);
 
-    TalonFX motor;
-    TalonFXSimState motorSim;
-    TalonFXConfiguration motorConfig;
+    private TalonFX motor;
+    private TalonFXSimState motorSim;
+    private TalonFXConfiguration motorConfig;
 
     // Used for actually moving the motor to a given position with PID applied to a voltage input.
     PositionVoltage positionControl = new PositionVoltage(0);

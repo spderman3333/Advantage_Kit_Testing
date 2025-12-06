@@ -24,11 +24,14 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         io.updateState(replayedInputs);
         Logger.processInputs("Arm", replayedInputs);
-
-        SimulationVisualizer.getInstance().updateArmRotation(io.getArmPosition());
     }
 
-    public void setArmPosition(ArmPositions armPosition) {
+  @Override
+  public void simulationPeriodic() {
+    SimulationVisualizer.getInstance().updateArmRotation(io.getArmPosition());
+  }
+
+  public void setArmPosition(ArmPositions armPosition) {
         io.setPivotMotorSetpoint(armPosition.getMotorPosition());
     }
 
