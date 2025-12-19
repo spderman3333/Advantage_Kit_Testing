@@ -17,6 +17,8 @@ public class Elevator extends SubsystemBase {
     private final ElevatorIO io;
     private final ElevatorIOInputsAutoLogged replayedInputs = new ElevatorIOInputsAutoLogged();
 
+    private ElevatorHeight currentElevatorSetpoint = ElevatorHeight.DOWN;
+
     /**
      * @param io The hardware implementation for the elevator, either sim or real.
      */
@@ -33,6 +35,7 @@ public class Elevator extends SubsystemBase {
         io.updateState(replayedInputs);
         // Must be called every periodic after updating hardware state.
         Logger.processInputs("Elevator", replayedInputs);
+        Logger.recordOutput("Elevator", currentElevatorSetpoint.getPosition().in(Inches));
     }
 
     @Override
@@ -41,6 +44,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setElevatorPosition(ElevatorHeight height) {
+        currentElevatorSetpoint = height;
         io.setMotorSetpoint(height.getPositionAngle());
     }
 
@@ -51,7 +55,7 @@ public class Elevator extends SubsystemBase {
     public enum ElevatorHeight {
         // Positions taken from offseason bot code, inturn taken from onshape.
         UP(Inches.of(56.0)),
-        MIDDLE(Inches.of(28.0)),
+        MIDDLE(Inches.of(5.0)),
         DOWN(Inches.of(0.0));
 
         public final Distance position;
