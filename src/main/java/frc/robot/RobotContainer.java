@@ -88,7 +88,7 @@ public class RobotContainer {
 
                 break;
 
-            default:
+            case REPLAY:
                 // Replayed robot, disable IO implementations
                 drive = new Drive(
                         new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {});
@@ -98,6 +98,8 @@ public class RobotContainer {
                 arm = new Arm(new ArmIO() {});
 
                 break;
+            default:
+                throw new AssertionError(String.format("Unknown mode: %s", Constants.currentMode));
         }
 
         // Set up auto routines
