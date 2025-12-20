@@ -72,8 +72,7 @@ public class Elevator extends SubsystemBase {
 
         public Angle getPositionAngle() {
             // NOTE: yes this code is bs, but i wanna see it work first.
-            return Rotations.of(
-                    getPosition().in(Inches) / (ElevatorConstants.ELEVATOR_HEIGHT_CHANGE_PER_MOTOR_ROTATION));
+            return Rotations.of(getPosition().in(Inches) / ElevatorConstants.ELEVATOR_HEIGHT_CHANGE_PER_MOTOR_ROTATION);
         }
     }
 }

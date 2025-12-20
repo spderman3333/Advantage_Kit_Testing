@@ -55,7 +55,8 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.motorCurrent = motor.getStatorCurrent().getValueAsDouble();
         inputs.motorVoltage = motor.getMotorVoltage().getValueAsDouble();
 
-        Logger.recordOutput("Elevator/motor/Setpoint", currentMotorSetpoint);
+        // Remember to explicitly state the unit.
+        Logger.recordOutput("Elevator/motor/SetpointRotations", currentMotorSetpoint.in(Rotations));
     }
 
     @Override
@@ -80,6 +81,6 @@ public class ElevatorIOReal implements ElevatorIO {
     }
 
     private static Distance motorRotationToCarriagePosition(Angle motorPosition) {
-        return Inches.of(motorPosition.in(Revolution) * ELEVATOR_HEIGHT_CHANGE_PER_MOTOR_ROTATION);
+        return Inches.of(motorPosition.in(Rotations) * ELEVATOR_HEIGHT_CHANGE_PER_MOTOR_ROTATION);
     }
 }

@@ -80,7 +80,8 @@ public class ElevatorIOSim implements ElevatorIO {
 
         // Logs to "Real Outputs" NT
         Logger.recordOutput("Simulated Elevator/motorSim/Voltage", motorSim.getMotorVoltage());
-        Logger.recordOutput("Simulated Elevator/motor/Setpoint", currentMotorSetpoint);
+        // Explicitly stating the unit prevents confusion when looking at the value in adv. scope.
+        Logger.recordOutput("Simulated Elevator/motor/SetpointRotations", currentMotorSetpoint.in(Rotations));
         Logger.recordOutput("Simulated Elevator/elevatorSim/hitsUpperLimit", elevatorSim.hasHitUpperLimit());
         Logger.recordOutput("Simulated Elevator/elevatorSim/hitsLowerLimit", elevatorSim.hasHitLowerLimit());
 
