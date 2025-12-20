@@ -188,7 +188,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         toggleOffOn()
-        palantirJavaFormat('2.39.0') // palantirJavaFormat is more resilient to different JDK versons than google.
+        palantirJavaFormat('2.39.0') // palantirJavaFormat is more resilient to different JDK versions than google.
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
