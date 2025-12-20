@@ -35,7 +35,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  */
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;
-    private RobotContainer robotContainer;
+    private final RobotContainer robotContainer;
 
     public Robot() {
         // Record metadata
@@ -142,9 +142,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousPeriodic() {}
 
-    /** This function is called once when teleop is enabled. */
+    /** This function is called after autonomous exits. */
     @Override
-    public void teleopInit() {
+    public void autonomousExit() {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
@@ -153,6 +153,10 @@ public class Robot extends LoggedRobot {
             autonomousCommand.cancel();
         }
     }
+
+    /** This function is called once when teleop is enabled. */
+    @Override
+    public void teleopInit() {}
 
     /** This function is called periodically during operator control. */
     @Override
