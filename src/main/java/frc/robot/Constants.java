@@ -71,6 +71,7 @@ public final class Constants {
     public static final int ELEVATOR_ID = 23;
 
     // Arm
-    public static final int ARM_PIVOT_ID = 15;
-    public static final int ARM_INTAKE_ID = 16;
+    public static final int ARM_PIVOT_ID = 25;
+    public static final int ARM_INTAKE_ID = 18;
+    public static final int ARM_ENCODER_ID = 24;
 }
