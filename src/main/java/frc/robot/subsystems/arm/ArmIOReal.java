@@ -1,16 +1,17 @@
 package frc.robot.subsystems.arm;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static frc.robot.Constants.*;
 import static frc.robot.subsystems.arm.ArmConstants.*;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants;
 
 // TODO: Test this class on LePrawn, ensure the arm won't rotate more than once in any direction.
 public class ArmIOReal implements ArmIO {
@@ -19,6 +20,9 @@ public class ArmIOReal implements ArmIO {
     TalonFX pivotMotor;
     TalonFXConfiguration pivotMotorConfig;
 
+    CANcoder armEncoder;
+    CANcoderConfiguration armEncoderConfig;
+
     PositionVoltage pivotPositionControl = new PositionVoltage(0);
 
     // Intake/Outtake motors & configurations
@@ -26,8 +30,18 @@ public class ArmIOReal implements ArmIO {
     TalonFXConfiguration intakeMotorConfig;
 
     public ArmIOReal() {
+        // Set up the arm encoder (records the arm position)
+        armEncoder = new CANcoder(ARM_ENCODER_ID);
+        armEncoderConfig = new CANcoderConfiguration();
+        armEncoderConfig.withMagnetSensor(
+                new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
+
         // Set up arm pivot motor.
-        pivotMotor = new TalonFX(Constants.ARM_PIVOT_ID);
+        pivotMotor = new TalonFX(ARM_PIVOT_ID);
+
+        // Set the current position of the arm to what the position of the absolute encoder.
+        // Negates the encoder position because the encoder and motor are on different sides of the arm carriage.
+        pivotMotor.setPosition(armEncoder.getAbsolutePosition().getValue().unaryMinus());
 
         // Start motor config.
         pivotMotorConfig = new TalonFXConfiguration();
@@ -44,7 +58,7 @@ public class ArmIOReal implements ArmIO {
         pivotMotor.getConfigurator().apply(pivotMotorConfig);
 
         // Set up arm intake motor.
-        intakeMotor = new TalonFX(Constants.ARM_INTAKE_ID);
+        intakeMotor = new TalonFX(ARM_INTAKE_ID);
 
         // Start motor config.
         intakeMotorConfig = new TalonFXConfiguration();
@@ -59,7 +73,7 @@ public class ArmIOReal implements ArmIO {
 
     @Override
     public void updateState(ArmIOInputs inputs) {
-        inputs.armPositionDegrees = 0.0;
+        inputs.armPositionDegrees = pivotMotor.getPosition().getValue().in(Degrees) / MOTOR_TO_ARM_GEARING;
 
         inputs.pivotMotorRotations = pivotMotor.getPosition().getValueAsDouble();
         inputs.pivotMotorVelocityRotsPerSecond = pivotMotor.getVelocity().getValueAsDouble();
@@ -68,10 +82,14 @@ public class ArmIOReal implements ArmIO {
 
         inputs.intakeMotorVelocityRotsPerSecond = intakeMotor.getVelocity().getValueAsDouble();
         inputs.intakeMotorVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
+
+        inputs.encoderPositionDegrees = armEncoder.getPosition().getValue().in(Degrees);
     }
 
     @Override
     public void setPivotMotorSetpoint(Angle setpoint) {
+        // "0" in sim is facing to the east, while in real robot, it is north. No me gusta, but thus must be done.
+
         pivotMotor.setControl(pivotPositionControl.withPosition(setpoint));
     }
 

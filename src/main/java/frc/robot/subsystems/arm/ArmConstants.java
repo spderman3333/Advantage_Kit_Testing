@@ -6,6 +6,7 @@ import edu.wpi.first.units.measure.*;
 
 public class ArmConstants {
 
+    // 78 motor rotations : 1 arm rotation
     public static final int MOTOR_TO_ARM_GEARING = 78;
 
     // NOTE: This weight has been given by design, thanks design.

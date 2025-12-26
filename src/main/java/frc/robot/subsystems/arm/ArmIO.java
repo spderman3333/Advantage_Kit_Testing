@@ -22,6 +22,9 @@ public interface ArmIO {
         // Intake motor inputs
         public double intakeMotorVelocityRotsPerSecond;
         public double intakeMotorVoltage;
+
+        // Encoder inputs
+        public double encoderPositionDegrees;
     }
 
     /**

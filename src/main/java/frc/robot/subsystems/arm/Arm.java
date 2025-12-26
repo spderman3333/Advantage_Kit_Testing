@@ -16,6 +16,8 @@ public class Arm extends SubsystemBase {
     private final ArmIO io;
     private final ArmIOInputsAutoLogged replayedInputs = new ArmIOInputsAutoLogged();
 
+    private ArmPositions currentArmPosition = ArmPositions.NORTH;
+
     public Arm(ArmIO io) {
         this.io = io;
     }
@@ -58,7 +60,7 @@ public class Arm extends SubsystemBase {
 
     public enum ArmPositions {
         // According to a unit circle.
-        // These are the arm Positions, not motor positions
+        // These are the arm positions, not motor positions
         EAST(Degrees.of(0)),
         NORTH(Degrees.of(90)),
         WEST(Degrees.of(180)),
