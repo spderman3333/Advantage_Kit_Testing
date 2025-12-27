@@ -14,12 +14,10 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.controller.Controller;
-import frc.robot.controller.PS4Controller;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
@@ -49,14 +47,15 @@ public class RobotContainer {
     private final Elevator elevator;
     private final Arm arm;
 
-    // Controller
-    private final Controller controller = new PS4Controller(0);
-
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
 
+    // Keeps track if the controller bindings have been initialized.
+    private boolean bindingsInitialized = false;
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        // controller = getController(0);
         switch (Constants.currentMode) {
             case REAL:
                 // Real robot, instantiate hardware IO implementations
@@ -112,18 +111,17 @@ public class RobotContainer {
                 "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    }
 
-        // Configure the button bindings
-        configureButtonBindings();
+    public boolean getBindingsInitialized() {
+        return bindingsInitialized;
     }
 
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     * instantiating a 2813's {@link Controller} subclasses.
      */
-    private void configureButtonBindings() {
+    public void configureButtonBindings(Controller controller) {
         // Default command, normal field-relative drive.
         // Xbox controller that I got is busted or something, the getRightY() binds to a trigger for some reason.
         drive.setDefaultCommand(DriveCommands.joystickDrive(
@@ -162,6 +160,8 @@ public class RobotContainer {
         controller.faceRight().onTrue(arm.setArmPositionCommand(Arm.ArmPositions.EAST));
         controller.faceDown().onTrue(arm.setArmPositionCommand(Arm.ArmPositions.SOUTH));
         controller.faceLeft().onTrue(arm.setArmPositionCommand(Arm.ArmPositions.WEST));
+
+        bindingsInitialized = true;
     }
 
     /**
